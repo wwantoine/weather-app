@@ -27,7 +27,10 @@ export default class App extends Component {
 
   getWeather = async (cityName, lat, lon) => {
     let apikey = process.env.REACT_APP_APIKEY;
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.state.cityInput}&lat=${lat}&lon=${lon}&appid=${apikey}&units=metric`
+    if(this.state.cityInput !== ""){
+      cityName=this.state.cityInput;
+    }
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&lat=${lat}&lon=${lon}&appid=${apikey}&units=metric`
     let response = await fetch(url)
     let data = await response.json()
     // console.log("data", data)
@@ -48,7 +51,7 @@ export default class App extends Component {
 
   render() {
     const isLoading = this.state.isLoading;
-    if (isLoading == true) return <ClipLoader
+    if (isLoading === true) return <ClipLoader
     css={override}
     size={150}
     color={"#123abc"}
@@ -61,8 +64,8 @@ export default class App extends Component {
             <Form inline onSubmit={(e)=>{
               e.preventDefault();
               this.getWeather();}}>
-              <FormControl type="text" placeholder="Weather in your city" className="mr-sm-2" value={this.state.cityInput} onChange={(e) => {this.setState({...this.state,cityInput: e.target.value})}} />
-              <Button variant="outline-success">Search</Button>
+              <FormControl type="text" placeholder="Weather in your city" className="mr-sm-2" onChange={(e) => {this.setState({...this.state,cityInput: e.target.value})}} />
+              <Button type="submit" variant="outline-success">Search</Button>
             </Form>
             <h1 className="col-12 display-4 my-2 py-3">{this.state.weather.name}, {this.state.weather.sys.country}</h1>
             <h2 className="col-12 text-danger">{this.state.weather.main.temp}°C</h2>
